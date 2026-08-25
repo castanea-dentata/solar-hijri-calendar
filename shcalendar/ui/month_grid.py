@@ -29,8 +29,8 @@ class MonthGrid(QWidget):
         for i, name in enumerate(jalali.DAYS_ABBR):
             lbl = QLabel(name)
             lbl.setAlignment(Qt.AlignCenter)
-            weight = "700" if i == jalali.WEEKEND_INDEX else "600"
-            color = "#0f6f5c" if i == jalali.WEEKEND_INDEX else "#6b7280"
+            weight = "700" if i in jalali.WEEKEND_INDEX else "600"
+            color = "#0f6f5c" if i in jalali.WEEKEND_INDEX else "#6b7280"
             lbl.setStyleSheet(f"font-weight:{weight}; color:{color}; padding:4px;")
             header_layout.addWidget(lbl, 0, i)
         outer.addWidget(header)
@@ -81,7 +81,7 @@ class MonthGrid(QWidget):
                     is_selected = keep_selection and day == self.selected_day
                     cell.set_state(
                         is_today=is_today,
-                        is_weekend=(wd == jalali.WEEKEND_INDEX),
+                        is_weekend=(wd in jalali.WEEKEND_INDEX),
                         is_selected=is_selected,
                         events=by_day.get(day, []),
                     )

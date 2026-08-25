@@ -11,15 +11,14 @@ import jdatetime
 
 MONTHS_FA = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
              'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند']
-MONTHS_EN = ['Farvardin', 'Ordibehesht', 'Khordad', 'Tir', 'Mordad', 'Shahrivar',
-             'Mehr', 'Aban', 'Azar', 'Dey', 'Bahman', 'Esfand']
+MONTHS_EN = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+             'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces']
 
 DAYS_FA = ['شنبه', 'یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه']
-DAYS_EN = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-DAYS_ABBR = ['Sh', 'Ye', 'Do', 'Se', 'Ch', 'Pa', 'Jo']
+DAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+DAYS_ABBR = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
-WEEKEND_INDEX = 6  # Friday
-
+WEEKEND_INDEX = {0, 6}  # Saturday amd Sunday
 
 def is_leap(year: int) -> bool:
     return jdatetime.date(year, 1, 1).isleap()
@@ -34,8 +33,8 @@ def month_length(year: int, month: int) -> int:
 
 
 def weekday_of_first(year: int, month: int) -> int:
-    """0=Saturday .. 6=Friday for the 1st of the given Jalali month."""
-    return jdatetime.date(year, month, 1).weekday()
+    native = jdatetime.date(year, month, 1).weekday()  # 0=Sat..6=Fri
+    return (native - 1) % 7  # 0=Sun..6=Sat
 
 
 def today() -> tuple[int, int, int]:
@@ -62,15 +61,15 @@ def add_months(year: int, month: int, delta: int) -> tuple[int, int]:
     idx = (year * 12 + (month - 1)) + delta
     return idx // 12, idx % 12 + 1
 
+HOLOCENE_OFFSET = 10621
 
 def format_long(year: int, month: int, day: int) -> str:
-    return f"{day} {MONTHS_EN[month - 1]} {year}"
-
+    return f"{day} {MONTHS_EN[month - 1]} {year + HOLOCENE_OFFSET}"
 
 def format_with_weekday(year: int, month: int, day: int) -> str:
-    wd = jdatetime.date(year, month, day).weekday()
-    return f"{DAYS_EN[wd]}, {day} {MONTHS_EN[month - 1]} {year}"
-
+    native_wd = jdatetime.date(year, month, day).weekday()  # 0=Sat..6=Fri, jdatetime's fixed convention
+    wd = (native_wd - 1) % 7  # 0=Sun..6=Sat, matches your reordered DAYS_EN
+    return f"{DAYS_EN[wd]}, {day} {MONTHS_EN[month - 1]} {year + HOLOCENE_OFFSET}"
 
 @dataclass(frozen=True)
 class JalaliDate:
@@ -79,7 +78,8 @@ class JalaliDate:
     day: int
 
     def weekday(self) -> int:
-        return jdatetime.date(self.year, self.month, self.day).weekday()
+        native = jdatetime.date(year, month, 1).weekday()  # 0=Sat..6=Fri
+        return (native - 1) % 7  # 0=Sun..6=Sat
 
     def togregorian(self) -> _dt.date:
         return to_gregorian(self.year, self.month, self.day)

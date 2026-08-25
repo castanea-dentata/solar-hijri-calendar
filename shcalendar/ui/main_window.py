@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
     def refresh_month(self):
         self.month_grid.refresh()
         self.month_label.setText(
-            f"{jalali.MONTHS_EN[self.month_grid.month - 1]} {self.month_grid.year}"
+            f"{jalali.MONTHS_EN[self.month_grid.month - 1]} {self.month_grid.year + jalali.HOLOCENE_OFFSET}"
         )
 
     def go_prev_month(self):
