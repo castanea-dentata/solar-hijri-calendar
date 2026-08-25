@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Solar Hijri Calendar
+GenericName=Calendar
+Comment=A PIM calendar built on the Solar Hijri (Jalali) calendar
+Exec=solar-hijri-calendar
+Icon=solar-hijri-calendar
+Terminal=false
+Categories=Office;Calendar;Qt;KDE;
+StartupWMClass=solar-hijri-calendar

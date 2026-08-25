@@ -1,0 +1,19 @@
+[project]
+name = "solar-hijri-calendar"
+version = "0.1.0"
+description = "A native Qt PIM calendar built on the Solar Hijri (Jalali) calendar system"
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6>=6.6",
+    "jdatetime>=4.1",
+]
+
+[project.scripts]
+solar-hijri-calendar = "shcalendar.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["shcalendar*"]
